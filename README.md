@@ -1,5 +1,5 @@
 # digit-recognition
-random forest @ python
+[![Circle CI](https://circleci.com/gh/jbytw/digit-recognition.svg?style=svg)](https://circleci.com/gh/jbytw/digit-recognition)
 
 ## Development Setup
 * python http://apple.stackexchange.com/questions/209572/how-to-use-pip-after-the-el-capitan-max-os-x-upgrade
@@ -9,3 +9,7 @@ random forest @ python
 * `data`    : raw data for training / testing
 * `ref`     : collected sample code from the internet
 * `feature` : extracted feature set from `data`
+
+## Feature (target)
+* color difference / slope
+* histogram (horizontal, vertical)
