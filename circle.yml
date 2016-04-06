@@ -4,4 +4,11 @@ machine:
 
 dependencies:
   pre:
+    - pip install numpy
+    - pip install scipy
+    - pip install scikit-learn
     - pip install plotly
+
+test:
+  override:
+    - python extractor.py
