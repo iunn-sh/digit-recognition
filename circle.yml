@@ -4,11 +4,17 @@ machine:
 
 dependencies:
   pre:
-    - pip install numpy
-    - pip install scipy
-    - pip install scikit-learn
-    - pip install plotly
+    - pip install numpy --upgrade
+    - pip install scipy --upgrade
+    - pip install scikit-learn --upgrade
+    - pip install plotly --upgrade
 
 test:
   override:
     - python recognizer.py
+
+deploy:
+  development:
+    branch: master
+    commands:
+      - python plotter.py

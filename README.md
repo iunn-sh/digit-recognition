@@ -10,6 +10,11 @@
 * `ref`     : collected sample code from the internet
 * `feature` : extracted feature set from `data`
 
+## File usage
+* `extractor.py`
+* `recognizer.py` : train, test, create .csv for submission
+* `plotter.py`  
+
 ## Feature Extraction
 * color difference / slope
 * histogram of oriented gradients
