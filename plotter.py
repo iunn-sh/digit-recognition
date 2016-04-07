@@ -5,8 +5,8 @@ from plotly.graph_objs import *
 
 def get_commit_id():
     commit = environ.get('CIRCLE_SHA1')
-    print commit
-    return commit
+    print commit[:7]
+    return commit[:7]
 
 def get_oob():
     oob = recognizer.random_forest() * 100
