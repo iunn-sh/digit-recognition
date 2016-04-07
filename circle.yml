@@ -13,7 +13,7 @@ test:
   override:
     - python recognizer.py
 
-deploy:
+deployment:
   development:
     branch: master
     commands:
