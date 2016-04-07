@@ -19,9 +19,9 @@ def plot(commit, oob):
     py.sign_in(username, api_key)
     new_data = Scatter(x=[commit], y=[oob] )
     data = Data( [ new_data ] )
-    plot_url = py.plot(data, filename='oob_accuracy', fileopt='extend')
+    plot_url = py.plot(data, filename='oob accuracy', fileopt='extend')
 
 if __name__ == "__main__":
     commit = get_commit_id()
     oob = get_oob()
-    # plot(commit, oob)
+    plot(commit, oob)
