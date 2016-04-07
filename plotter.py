@@ -17,13 +17,12 @@ def get_oob():
 def plot(commit, oob):
     plotly.tools.set_credentials_file(username=environ.get('PLOTLY_USERNAME'),
                                         api_key=environ.get('PLOTLY_API_KEY'))
-    new_data = Scatter(x=[commit], y=[oob] )
+    new_data = Scatter(x=commit, y=oob)
     data = Data( [ new_data ] )
     plot_url = py.plot(data, filename='random forest', fileopt='extend')
     print plot_url
 
 if __name__ == "__main__":
-    plot("test123", 60)
-    # commit = get_commit_id()
-    # oob = get_oob()
-    # plot(commit, oob)
+    commit = get_commit_id()
+    oob = get_oob()
+    plot(commit, oob)
