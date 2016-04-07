@@ -15,10 +15,10 @@ test = genfromtxt(open(path.join(script_dir, 'data/test.csv'), 'r'),
 # create and train the random forest
 # multi-core CPUs can use: rf =
 # RandomForestClassifier(n_estimators=100, n_jobs=2)
-rf = RandomForestClassifier(n_estimators=50, oob_score=True, n_jobs=-1)
+rf = RandomForestClassifier(n_estimators=100, oob_score=True, n_jobs=-1)
 rf.fit(train, target)
 prob = rf.predict_proba(test)
-savetxt(path.join(script_dir, 'data/submit.csv'),
+savetxt(path.join(script_dir, 'data/sample.csv'),
         prob, delimiter=',', fmt='%f')
 print rf.oob_score_
 

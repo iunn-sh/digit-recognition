@@ -10,6 +10,6 @@
 * `ref`     : collected sample code from the internet
 * `feature` : extracted feature set from `data`
 
-## Feature (target)
+## Feature Extraction
 * color difference / slope
-* histogram (horizontal, vertical)
+* histogram of oriented gradients
