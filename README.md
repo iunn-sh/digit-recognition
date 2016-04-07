@@ -2,7 +2,7 @@
 [![Circle CI](https://circleci.com/gh/jbytw/digit-recognition.svg?style=svg)](https://circleci.com/gh/jbytw/digit-recognition)
 
 ## Commit History
-![out-of-bag accuracy](https://plot.ly/~jbytw/4/random-forest.png)
+![out-of-bag accuracy](https://plot.ly/~jbytw/16/random-forest.png)
 
 ## Development Setup
 * python http://apple.stackexchange.com/questions/209572/how-to-use-pip-after-the-el-capitan-max-os-x-upgrade

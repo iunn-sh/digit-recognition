@@ -19,7 +19,7 @@ def plot(commit, oob):
                                         api_key=environ.get('PLOTLY_API_KEY'))
     new_data = Scatter(x=commit, y=oob)
     data = Data( [ new_data ] )
-    plot_url = py.plot(data, filename='random forest', fileopt='extend')
+    plot_url = py.plot(data, filename='Random Forest', fileopt='extend')
     print plot_url
 
 if __name__ == "__main__":
