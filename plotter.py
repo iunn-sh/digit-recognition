@@ -20,6 +20,7 @@ def plot(commit, oob):
     new_data = Scatter(x=[commit], y=[oob] )
     data = Data( [ new_data ] )
     plot_url = py.plot(data, filename='oob accuracy', fileopt='extend')
+    print plot_url
 
 if __name__ == "__main__":
     commit = get_commit_id()
