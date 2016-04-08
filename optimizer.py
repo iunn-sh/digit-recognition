@@ -8,7 +8,7 @@ from os import path
 
 RANDOM_STATE = 123
 
-def calculate_plot():
+def calculate_oob_error():
     # create the training & test sets, skipping the header row with [1:]
     script_dir = path.dirname(__file__)  # <-- absolute dir the script is in
     dataset = genfromtxt(open(path.join(script_dir, 'data/train.csv'), 'r'),
@@ -65,4 +65,4 @@ def calculate_plot():
     plt.show()
 
 if __name__ == "__main__":
-    calculate_plot()
+    calculate_oob_error()

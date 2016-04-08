@@ -9,8 +9,8 @@ def get_commit_id():
     print commit[:7]
     return commit[:7]
 
-def get_oob():
-    oob = recognizer.random_forest() * 100
+def get_oob_percent():
+    oob = recognizer.get_oob() * 100
     print oob, "%"
     return oob
 
@@ -24,5 +24,5 @@ def plot(commit, oob):
 
 if __name__ == "__main__":
     commit = get_commit_id()
-    oob = get_oob()
+    oob = get_oob_percent()
     plot(commit, oob)
