@@ -10,7 +10,8 @@ def get_commit_id():
     return commit[:7]
 
 def get_oob_percent():
-    oob = recognizer.get_oob() * 100
+    forest = recognizer.create_forest()
+    oob = recognizer.get_oob(forest) * 100
     print oob, "%"
     return oob
 
