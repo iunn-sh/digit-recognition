@@ -42,7 +42,7 @@ def calculate_oob_error():
 
     # Range of `n_estimators` values to explore.
     min_estimators = 50
-    max_estimators = 500
+    max_estimators = 250
 
     for label, clf in ensemble_clfs:
         for i in range(min_estimators, max_estimators + 1):

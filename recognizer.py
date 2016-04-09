@@ -1,31 +1,57 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import log_loss
-from numpy import genfromtxt, savetxt, std, argsort
+from numpy import genfromtxt, savetxt, std, argsort, hstack
 from os import path
+import csv
 
 def create_forest():
-    # create the training & test sets, skipping the header row with [1:]
+    # create the training & test sets
     script_dir = path.dirname(__file__)  # <-- absolute dir the script is in
-    dataset = genfromtxt(open(path.join(script_dir, 'data/train.csv'), 'r'),
-                            delimiter=',', dtype='f8')[1:]
-    target = [x[0] for x in dataset]
-    train = [x[1:] for x in dataset]
-    test = genfromtxt(open(path.join(script_dir, 'data/test.csv'), 'r'),
-                        delimiter=',', dtype='f8')[1:]
+
+    label = read_csv_to_list(path.join(script_dir, 'data/label.csv'))
+    train = read_csv_to_list(path.join(script_dir, 'data/train.csv'))
+    test = read_csv_to_list(path.join(script_dir, 'data/test.csv'))
+    label_train = link_by_key(label, train)
+    print "training set count =", len(label_train)
+    print "testing set count =", len(test)
 
     # create and train the random forest
-    # multi-core CPUs can use: rf =
-    # RandomForestClassifier(n_estimators=100, n_jobs=2)
     forest = RandomForestClassifier(n_estimators=100, oob_score=True, n_jobs=-1)
-    forest.fit(train, target)
-    prob = forest.predict_proba(test)
-    savetxt(path.join(script_dir, 'data/sample.csv'),
-            prob, delimiter=',', fmt='%f')
+    forest.fit([t[2:] for t in label_train], [l[1] for l in label_train])
+    prob = forest.predict_proba([t[1:] for t in test])
+    print prob
+
+    # combine sample name & predicted probability
+    savetxt(path.join(script_dir, 'data/submit.csv'),
+            hstack([[[t[0]] for t in test], prob]), delimiter=',', fmt='%s')
 
     return forest
 
+def read_csv_to_list(path):
+    l = []
+    with open(path, 'rb') as f:
+        reader = csv.reader(f)
+        l = list(reader)
+    return l
+
+def link_by_key(a, b):
+    # use dictionary for better performance
+    a_dict = { i[0]:i[1:] for i in a }
+    b_dict = { j[0]:j[1:] for j in b }
+    print "length of arrays =", len(a_dict), len(b_dict)
+
+    ab = []
+    for key in a_dict:
+        line = []
+        line.append(key)
+        line.extend(a_dict[key])
+        line.extend(b_dict.get(key))
+        ab.append(line)
+
+    return ab
+
 def get_oob(forest):
-    print "out-of-bag accuracy = ", forest.oob_score_
+    print "out-of-bag accuracy =", forest.oob_score_
     return forest.oob_score_
 
 
