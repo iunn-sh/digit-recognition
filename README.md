@@ -12,6 +12,7 @@
 * `data`    : raw data for training / testing
 * `ref`     : collected sample code from the internet
 * `feature` : extracted feature set from `data`
+* `submit`  : submit to contest history
 
 ## File Usage
 * `extractor.py`  : pre-process, only run 1 time for a dataset
