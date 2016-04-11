@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import recognizer
 
 from collections import OrderedDict
 from sklearn.datasets import make_classification
@@ -11,13 +12,11 @@ RANDOM_STATE = 123
 def calculate_oob_error():
     # create the training & test sets, skipping the header row with [1:]
     script_dir = path.dirname(__file__)  # <-- absolute dir the script is in
-    dataset = genfromtxt(open(path.join(script_dir, 'data/train.csv'), 'r'),
-                            delimiter=',', dtype='f8')[1:]
-    target = [x[0] for x in dataset]
-    train = [x[1:] for x in dataset]
-    test = genfromtxt(open(path.join(script_dir, 'data/test.csv'),
-                            'r'), delimiter=',', dtype='f8')[1:]
-
+    # dataset = genfromtxt(open(path.join(script_dir, 'data/train.csv'), 'r'),
+    #                         delimiter=',', dtype='f8')[1:]
+    target = recognizer.read_csv_to_list(path.join(script_dir, 'data/label.csv'))
+    train = recognizer.read_csv_to_list(path.join(script_dir, 'data/train.csv'))
+    target_train = recognizer.link_by_key(target, train)
 
     # NOTE: Setting the `warm_start` construction parameter to `True` disables
     # support for paralellised ensembles but is necessary for tracking the OOB
@@ -41,13 +40,13 @@ def calculate_oob_error():
     error_rate = OrderedDict((label, []) for label, _ in ensemble_clfs)
 
     # Range of `n_estimators` values to explore.
-    min_estimators = 50
-    max_estimators = 250
+    min_estimators = 100
+    max_estimators = 400
 
     for label, clf in ensemble_clfs:
         for i in range(min_estimators, max_estimators + 1):
             clf.set_params(n_estimators=i)
-            clf.fit(train, target)
+            clf.fit([t[2:] for t in target_train], [l[1] for l in target_train])
 
             # Record the OOB error for each `n_estimators=i` setting.
             oob_error = 1 - clf.oob_score_

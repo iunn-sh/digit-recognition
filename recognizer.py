@@ -16,7 +16,7 @@ def create_forest():
     print "testing set count =", len(test)
 
     # create and train the random forest
-    forest = RandomForestClassifier(n_estimators=100, oob_score=True, n_jobs=-1)
+    forest = RandomForestClassifier(n_estimators=250, oob_score=True, n_jobs=-1)
     forest.fit([t[2:] for t in label_train], [l[1] for l in label_train])
     prob = forest.predict_proba([t[1:] for t in test])
     print prob
