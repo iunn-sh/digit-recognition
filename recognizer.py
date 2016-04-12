@@ -20,7 +20,17 @@ def create_forest():
     forest.fit([t[2:] for t in label_train], [l[1] for l in label_train])
     prob = forest.predict_proba([t[1:] for t in test])
     print prob
-
+    submit = hstack([[[t[0]] for t in test], prob])
+    for row in submit:
+        h = False
+        for i in range(1,len(row)):
+            if(float(row[i]) >= 0.4): 
+                h = True
+                #print 'row=%s,p=%s > 0.9' %(row[0],row[i])
+                break
+        if(not h):
+            print row[0]
+    
     # combine sample name & predicted probability
     savetxt(path.join(script_dir, 'data/submit.csv'),
             hstack([[[t[0]] for t in test], prob]), delimiter=',', fmt='%s')
