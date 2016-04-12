@@ -16,10 +16,10 @@ def create_forest():
     label_train = link_by_key(label, train)
 
     # include xy_sum in feature set
-    # train_xy = read_csv_to_list(path.join(script_dir, 'feature/train/xy_sum.csv'))
-    # label_train = link_by_key(label_train, train_xy)
-    # test_xy = read_csv_to_list(path.join(script_dir, 'feature/test/xy_sum.csv'))
-    # test = link_by_key(test, test_xy)
+    train_xy = read_csv_to_list(path.join(script_dir, 'feature/xy_sum_data_train.csv'))
+    label_train = link_by_key(label_train, train_xy)
+    test_xy = read_csv_to_list(path.join(script_dir, 'feature/xy_sum_data_test.csv'))
+    test = link_by_key(test, test_xy)
 
     print "training set count =", len(label_train)
     print "testing set count =", len(test)

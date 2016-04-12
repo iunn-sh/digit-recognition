@@ -32,19 +32,19 @@ def gen_xy_sum(output_fn):
         y_sum = []
         for i in range(LENGTH):
             x_list = img[i]
-            x_sum.append(str(sum(x_list)))
+            x_sum.append(str(sum(1 if x>0 else 0 for x in x_list)))
             # print "x", sum(x_list)
             y_list = []
             for j in range(LENGTH):
                 y_list.append(img[j, i])
-            y_sum.append(str(sum(y_list)))
+            y_sum.append(str(sum(1 if y>0 else 0 for y in y_list)))
             # print "y", sum(y_list)
         # print "xy_sum length:", len(x_sum), len(y_sum)
 
         linked = [name] + x_sum + y_sum
         print linked
         xy_sum.append(linked)
-    with open('Coding/digit-recognition/feature/tmp.csv', 'wb') as f:
+    with open('feature/xy_sum_'+output_fn.replace("/","_"), 'wb') as f:
         for l in xy_sum:
             f.write(','.join(l)+'\n')
 
