@@ -19,6 +19,7 @@
 * `recognizer.py` : train, test, create .csv for submission (main function)
 * `optimizer.py`  : calculate then plot out-of-bag accuracy for the range of trees (n_estimators)
 * `plotter.py`    : plot history accuracy to plotly, run at CircleCI
+* `displayer.py`  : display train/test file
 
 ## Feature Extraction
 * color difference / slope
