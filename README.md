@@ -15,7 +15,7 @@
 * `submit`  : submit to contest history
 
 ## File Usage
-* `extractor.py`  : pre-process, only run 1 time for a dataset
+* `extractor.py`  : pre-process, only run 1 time for reading raw data
 * `recognizer.py` : train, test, create .csv for submission (main function)
 * `optimizer.py`  : calculate then plot out-of-bag accuracy for the range of trees (n_estimators)
 * `plotter.py`    : plot history accuracy to plotly, run at CircleCI

@@ -1,13 +1,16 @@
 import sys
 import math
 import csv
+import numpy as np
+import recognizer
 
 # python extractor.py data/label.csv data/train.csv data/train/
 # python extractor.py data/sample.csv data/test.csv data/test/
 
-PIXEL_COUNT = 28 * 28
+LENGTH = 28
+PIXEL_COUNT = LENGTH * LENGTH
 
-def gen_feature(fn):
+def get_raw(fn):
     with open(fn, 'rb') as f:
         px=f.read(PIXEL_COUNT)
         line = []
@@ -16,12 +19,41 @@ def gen_feature(fn):
 
     return line
 
+def gen_xy_sum(output_fn):
+    pixel = recognizer.read_csv_to_list(output_fn)
+    xy_sum = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+
+        x_sum = []
+        y_sum = []
+        for i in range(LENGTH):
+            x_list = img[i]
+            x_sum.append(str(sum(x_list)))
+            # print "x", sum(x_list)
+            y_list = []
+            for j in range(LENGTH):
+                y_list.append(img[j, i])
+            y_sum.append(str(sum(y_list)))
+            # print "y", sum(y_list)
+        # print "xy_sum length:", len(x_sum), len(y_sum)
+
+        linked = [name] + x_sum + y_sum
+        print linked
+        xy_sum.append(linked)
+    with open('Coding/digit-recognition/feature/tmp.csv', 'wb') as f:
+        for l in xy_sum:
+            f.write(','.join(l)+'\n')
+
 def get_csv(fn, output_fn, folder):
     feas=[]
     with open(fn, 'rb') as f:
         # for each file in sample file
         for l in csv.reader(f):
-            fea=gen_feature(folder+l[0])
+            fea=get_raw(folder+l[0])
             # for training data, with label
             # feas.append([l[0], l[1]]+map(str, fea))
             # for testing data, without label
@@ -33,3 +65,4 @@ def get_csv(fn, output_fn, folder):
 
 if __name__ == '__main__':
     get_csv(sys.argv[1], sys.argv[2], sys.argv[3])
+    gen_xy_sum(sys.argv[2])

@@ -4,6 +4,8 @@ from numpy import genfromtxt, savetxt, std, argsort, hstack
 from os import path
 import csv
 
+NUM_TREE = 250
+
 def create_forest():
     # create the training & test sets
     script_dir = path.dirname(__file__)  # <-- absolute dir the script is in
@@ -12,11 +14,18 @@ def create_forest():
     train = read_csv_to_list(path.join(script_dir, 'data/train.csv'))
     test = read_csv_to_list(path.join(script_dir, 'data/test.csv'))
     label_train = link_by_key(label, train)
+
+    # include xy_sum in feature set
+    # train_xy = read_csv_to_list(path.join(script_dir, 'feature/train/xy_sum.csv'))
+    # label_train = link_by_key(label_train, train_xy)
+    # test_xy = read_csv_to_list(path.join(script_dir, 'feature/test/xy_sum.csv'))
+    # test = link_by_key(test, test_xy)
+
     print "training set count =", len(label_train)
     print "testing set count =", len(test)
 
     # create and train the random forest
-    forest = RandomForestClassifier(n_estimators=250, oob_score=True, n_jobs=-1)
+    forest = RandomForestClassifier(n_estimators=NUM_TREE, oob_score=True, n_jobs=-1)
     forest.fit([t[2:] for t in label_train], [l[1] for l in label_train])
     prob = forest.predict_proba([t[1:] for t in test])
     print prob
@@ -24,16 +33,16 @@ def create_forest():
     for row in submit:
         h = False
         for i in range(1,len(row)):
-            if(float(row[i]) >= 0.4): 
+            if(float(row[i]) >= 0.4):
                 h = True
                 #print 'row=%s,p=%s > 0.9' %(row[0],row[i])
                 break
         if(not h):
             print row[0]
-    
+
     # combine sample name & predicted probability
     savetxt(path.join(script_dir, 'data/submit.csv'),
-            hstack([[[t[0]] for t in test], prob]), delimiter=',', fmt='%s')
+            submit, delimiter=',', fmt='%s')
 
     return forest
 
