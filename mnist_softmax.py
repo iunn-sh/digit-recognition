@@ -28,6 +28,7 @@ import recognizer
 
 import numpy as np
 import pandas as pd
+from scipy import sparse
 import tensorflow as tf
 from os import path
 
@@ -230,11 +231,19 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 """
 #get prediction probability
 
-pred_prob = y_conv.eval(feed_dict={x: train_images, keep_prob: 1.0}, session=sess)
-print(test_head[1])
-out = np.concatenate((np.array(train_header), np.array(pred_prob).astype('|S10')), axis=1)
-np.savetxt('data/submit-tf-nn.csv', out, delimiter=',', header = '')
+pred_prob = y_conv.eval(feed_dict={x: test_images, keep_prob: 1.0}, session=sess)
+pred_prob = pred_prob.astype(str)
+
+print('pred_prob({0[0]},{0[1]})'.format(pred_prob.shape))
+print(pred_prob)
+print('test_head({0[0]},{0[1]})'.format(test_head.shape))
+#print(test_head[1])
+#print(train_header[1])
+print(test_head)
+out = np.hstack((test_head, pred_prob))
 print(out[1])
+np.savetxt('data/submit-tf-nn.csv', out, delimiter=',', header = '', fmt='%s')
+
 #out = np.concatenate((np.array(test_head).T, np.array(pred_prob)), axis=1)
 #print(out)
 #get prediction
