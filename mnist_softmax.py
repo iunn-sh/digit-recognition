@@ -118,7 +118,9 @@ print('images({0[0]},{0[1]})'.format(train_images.shape))
 
 # prepare label
 train_labels = pd.read_csv(path.join(ap_dir, 'data/label.csv'),header=None)
+train_header = train_labels.iloc[:,0:1].values
 train_labels = train_labels[[1]].values.ravel()
+
 print('train_labels({0})'.format(len(train_labels)))
 print ('train_labels[{0}] => {1}'.format(1,train_labels[1]))
 
@@ -201,7 +203,7 @@ train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
 correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 sess.run(tf.initialize_all_variables())
-for i in range(200):
+for i in range(2000):
   batch = next_batch(train_images,train_labels,50)
   if i%100 == 0:
     train_accuracy = accuracy.eval(feed_dict={ x:batch[0], y_: batch[1], keep_prob: 1.0})
@@ -228,9 +230,9 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 """
 #get prediction probability
 
-pred_prob = y_conv.eval(feed_dict={x: test_images, keep_prob: 1.0}, session=sess)
+pred_prob = y_conv.eval(feed_dict={x: train_images, keep_prob: 1.0}, session=sess)
 print(test_head[1])
-out = np.concatenate((np.array(test_head), np.array(pred_prob)), axis=1)
+out = np.concatenate((np.array(train_header), np.array(pred_prob).astype('|S10')), axis=1)
 np.savetxt('data/submit-tf-nn.csv', out, delimiter=',', header = '')
 print(out[1])
 #out = np.concatenate((np.array(test_head).T, np.array(pred_prob)), axis=1)
