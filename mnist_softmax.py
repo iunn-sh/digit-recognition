@@ -23,8 +23,8 @@ from __future__ import division
 from __future__ import print_function
 
 # Import data
-import input_data
-import recognizer
+# import input_data
+# import recognizer
 
 import numpy as np
 import pandas as pd
