@@ -8,10 +8,14 @@ dependencies:
     - pip install scipy --upgrade
     - pip install scikit-learn --upgrade
     - pip install plotly --upgrade
+    - pip install pandas --upgrade
+    - pip install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.whl
+
 
 test:
   override:
-    - python recognizer.py
+    - python random_forest.py
+    - python mnist_softmax.py 500
 
 deployment:
   development:

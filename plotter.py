@@ -1,4 +1,5 @@
-import recognizer
+import random_forest
+import mnist_softmax
 from os import environ
 import plotly
 import plotly.plotly as py
@@ -10,10 +11,15 @@ def get_commit_id():
     return commit[:7]
 
 def get_oob_percent():
-    forest = recognizer.create_forest()
-    oob = recognizer.get_oob(forest) * 100
+    forest = random_forest.create_forest()
+    oob = random_forest.get_oob(forest) * 100
     print oob, "%"
     return oob
+
+def get_mnist_percent(n_train):
+    mnist = mnist_softmax.train_test(n_train) * 100
+    print mnist, "%"
+    return mnist
 
 def plot(commit, oob):
     plotly.tools.set_credentials_file(username=environ.get('PLOTLY_USERNAME'),
@@ -27,3 +33,5 @@ if __name__ == "__main__":
     commit = get_commit_id()
     oob = get_oob_percent()
     plot(commit, oob)
+    # mnist = get_mnist_percent(6000)
+    # plot(commit, mnist)
