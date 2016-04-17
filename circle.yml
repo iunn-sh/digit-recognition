@@ -14,7 +14,7 @@ dependencies:
 
 test:
   override:
-    - cd feature
+    - cd feature/
     - pwd
     - ls
     - unzip deskew_data.zip
