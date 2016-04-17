@@ -10,13 +10,11 @@ dependencies:
     - pip install plotly --upgrade
     - pip install pandas --upgrade
     - pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0rc0-cp27-none-linux_x86_64.whl
-    - cd feature
-    - unzip deskew_data.zip
-    - cd ..
 
 
 test:
   override:
+    - cd feature && unzip deskew_data.zip
     - python random_forest.py
 
 deployment:
