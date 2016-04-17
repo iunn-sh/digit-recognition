@@ -14,7 +14,9 @@ dependencies:
 
 test:
   override:
-    - unzip feature/deskew_data.zip
+    - cd feature
+    - unzip deskew_data.zip
+    - cd ..
     - python random_forest.py
 
 deployment:
