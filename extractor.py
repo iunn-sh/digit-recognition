@@ -2,7 +2,8 @@ import sys
 import math
 import csv
 import numpy as np
-import recognizer
+import cv2
+import random_forest
 
 # python extractor.py data/label.csv data/train.csv data/train/
 # python extractor.py data/sample.csv data/test.csv data/test/
@@ -19,8 +20,36 @@ def get_raw(fn):
 
     return line
 
+def gen_deskew(output_fn):
+    pixel = random_forest.read_csv_to_list(output_fn)
+    deskew = []
+    affine_flags = cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img_deskew = []
+        # print "img:", len(img), img
+
+        m = cv2.moments(img)
+        if abs(m['mu02']) < 1e-2:
+            img_deskew = img.copy()
+        skew = m['mu11']/m['mu02']
+        M = np.float32([[1, skew, -0.5*LENGTH*skew], [0, 1, 0]])
+        img_deskew = cv2.warpAffine(img,M,(LENGTH, LENGTH),flags=affine_flags)
+        # print "img_deskew:", len(img_deskew.flatten()), img_deskew.flatten()
+
+        linked = [name] + ['{}'.format(x) for x in img_deskew.flatten()]
+        # print linked
+        deskew.append(linked)
+    with open('feature/deskew_'+output_fn.replace("/","_"), 'wb') as f:
+        for l in deskew:
+            f.write(','.join(l)+'\n')
+
+
 def gen_xy_sum(output_fn):
-    pixel = recognizer.read_csv_to_list(output_fn)
+    pixel = random_forest.read_csv_to_list(output_fn)
     xy_sum = []
 
     for row in pixel:
@@ -63,4 +92,5 @@ def get_csv(fn, output_fn, folder):
 
 if __name__ == '__main__':
     get_csv(sys.argv[1], sys.argv[2], sys.argv[3])
+    gen_deskew(sys.argv[2])
     gen_xy_sum(sys.argv[2])

@@ -15,7 +15,6 @@ dependencies:
 test:
   override:
     - python random_forest.py
-    - python mnist_softmax.py 500
 
 deployment:
   development:
