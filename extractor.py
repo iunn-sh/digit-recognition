@@ -5,6 +5,10 @@ import numpy as np
 import cv2
 import random_forest
 
+import matplotlib.pyplot as plt
+from skimage.feature import hog
+from skimage import data, color, exposure
+
 # python extractor.py data/label.csv data/train.csv data/train/
 # python extractor.py data/sample.csv data/test.csv data/test/
 
@@ -20,8 +24,62 @@ def get_raw(fn):
 
     return line
 
-def gen_deskew(output_fn):
-    pixel = random_forest.read_csv_to_list(output_fn)
+def gen_contour(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
+    contour = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img = img.astype(np.uint8)
+        # print img
+
+        ret, thresh = cv2.threshold(img, 127, 255, 0)
+        cnts, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        print str(len(cnts)),"contours"
+        for c in cnts:
+            print str(len(c)), "points"
+            # print c
+            cv2.drawContours(img, c, -1, (0,255,0), 3)
+            # print img
+            # f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+            # ax1.imshow(img, cmap=plt.cm.gray)
+            # ax2.imshow(img, cmap=plt.cm.gray)
+            # plt.suptitle('%s' %name)
+            # plt.show()
+
+        flatten = [val for lists in cnts for sublists in lists for sublist in sublists for val in sublist]
+        # print flatten
+        linked = [name] + ['{}'.format(x) for x in flatten]
+        # print linked
+        contour.append(linked)
+
+    with open(output_fn, 'wb') as f:
+        for l in contour:
+            f.write(','.join(l)+'\n')
+
+# def gen_hog(output_fn):
+#     pixel = random_forest.read_csv_to_list(output_fn)
+#     hog_pixel = []
+#
+#     for row in pixel:
+#         name = row[0]
+#         img = np.array(row[1:], dtype=np.float)
+#         img.shape = (LENGTH, LENGTH)
+#
+#         hog_image = hog(img, orientations=8, pixels_per_cell=(16, 16),
+#                             cells_per_block=(1, 1), visualise=True)
+#         print hog_image
+#
+#         linked = [name] + hog_image
+#         hog_pixel.append(linked)
+#     with open('feature/hog_'+output_fn.replace("/","_"), 'wb') as f:
+#         for l in hog_pixel:
+#             f.write(','.join(l)+'\n')
+
+def gen_deskew(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
     deskew = []
     affine_flags = cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR
 
@@ -30,7 +88,6 @@ def gen_deskew(output_fn):
         img = np.array(row[1:], dtype=np.float)
         img.shape = (LENGTH, LENGTH)
         img_deskew = []
-        # print "img:", len(img), img
 
         m = cv2.moments(img)
         if abs(m['mu02']) < 1e-2:
@@ -38,18 +95,16 @@ def gen_deskew(output_fn):
         skew = m['mu11']/m['mu02']
         M = np.float32([[1, skew, -0.5*LENGTH*skew], [0, 1, 0]])
         img_deskew = cv2.warpAffine(img,M,(LENGTH, LENGTH),flags=affine_flags)
-        # print "img_deskew:", len(img_deskew.flatten()), img_deskew.flatten()
 
         linked = [name] + ['{}'.format(x) for x in img_deskew.flatten()]
-        # print linked
         deskew.append(linked)
-    with open('feature/deskew_'+output_fn.replace("/","_"), 'wb') as f:
+
+    with open(output_fn, 'wb') as f:
         for l in deskew:
             f.write(','.join(l)+'\n')
 
-
-def gen_xy_sum(output_fn):
-    pixel = random_forest.read_csv_to_list(output_fn)
+def gen_xy_sum(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
     xy_sum = []
 
     for row in pixel:
@@ -71,7 +126,8 @@ def gen_xy_sum(output_fn):
         linked = [name] + x_sum + y_sum
         # print linked
         xy_sum.append(linked)
-    with open('feature/xy_sum_'+output_fn.replace("/","_"), 'wb') as f:
+
+    with open(output_fn, 'wb') as f:
         for l in xy_sum:
             f.write(','.join(l)+'\n')
 
@@ -91,6 +147,17 @@ def get_csv(fn, output_fn, folder):
         for l in feas: f.write(','.join(l)+'\n')
 
 if __name__ == '__main__':
-    get_csv(sys.argv[1], sys.argv[2], sys.argv[3])
-    gen_deskew(sys.argv[2])
-    gen_xy_sum(sys.argv[2])
+    fn = sys.argv[1]
+    output_fn = sys.argv[2]
+    folder = sys.argv[3]
+    get_csv(fn, output_fn, folder)
+
+    output_fn_deskew = 'feature/deskew_'+output_fn.replace("/","_")
+    gen_deskew(output_fn, output_fn_deskew)
+
+    output_fn_xy_sum = 'feature/xy_sum_'+output_fn.replace("/","_")
+    gen_xy_sum(output_fn_deskew, output_fn_xy_sum)
+    # gen_hog(sys.argv[2])
+
+    output_fn_contour = 'feature/contour_'+output_fn.replace("/","_")
+    gen_contour(output_fn_deskew, output_fn_contour)
