@@ -110,16 +110,23 @@ def train_test(num_train):
     # mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
 
     #prepare images
-    train_images = pd.read_csv(path.join(ap_dir, 'data/train.csv'),header=None)
+    #train_images = pd.read_csv(path.join(ap_dir, 'data/train.csv'),header=None)
+    deskew_train_images = pd.read_csv(path.join(ap_dir, 'feature/deskew_data_train.csv'),header=None)
+    train_images = deskew_train_images
+
     print('data({0[0]},{0[1]})'.format(train_images.shape))
     print (train_images.head())
     train_images = train_images.iloc[:,1:].values
     # convert from [0:255] => [0.0:1.0]
     train_images = np.multiply(train_images, 1.0 / 255.0)
     print('images({0[0]},{0[1]})'.format(train_images.shape))
+    print(train_images[0])
 
     # prepare label
     train_labels = pd.read_csv(path.join(ap_dir, 'data/label.csv'),header=None)
+    #deskew_train_labels = pd.read_csv(path.join(ap_dir, 'data/label.csv'),header=None)
+    #train_labels = train_labels.append(deskew_train_labels)
+
     train_header = train_labels.iloc[:,0:1].values
     train_labels = train_labels[[1]].values.ravel()
 
@@ -133,13 +140,13 @@ def train_test(num_train):
     print('labels({0[0]},{0[1]})'.format(train_labels.shape))
     print ('labels[{0}] => {1}'.format(1,train_labels[1]))
 
-    validation_images = train_images[:2000]
-    validation_labels = train_labels[:2000]
+    validation_images = train_images
+    validation_labels = train_labels
 
     print('validation_images({0[0]},{0[1]})'.format(validation_images.shape))
     print('validation_images({0[0]},{0[1]})'.format(validation_labels.shape))
 
-    test_images = pd.read_csv(path.join(ap_dir, 'data/test.csv'),header=None)
+    test_images = pd.read_csv(path.join(ap_dir, 'feature/deskew_data_test.csv'),header=None)
     print('test_images({0[0]},{0[1]})'.format(test_images.shape))
     print (test_images.head())
     test_head = test_images.iloc[:,0:1].values
@@ -232,9 +239,14 @@ def train_test(num_train):
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     """
     #get prediction probability
-
+    print("get prediction")
+    prediction = tf.argmax(y_conv,1)
+    pred = prediction.eval(feed_dict={x: test_images, keep_prob: 1.0})
+    print(pred)
+    print("get prediction probability")
     pred_prob = y_conv.eval(feed_dict={x: test_images, keep_prob: 1.0}, session=sess)
     pred_prob = pred_prob.astype(str)
+
 
     print('pred_prob({0[0]},{0[1]})'.format(pred_prob.shape))
     print(pred_prob)
@@ -243,7 +255,7 @@ def train_test(num_train):
     #print(train_header[1])
     print(test_head)
     out = np.hstack((test_head, pred_prob))
-    print(out[1])
+    print(out[0])
     np.savetxt('data/submit-tf-nn.csv', out, delimiter=',', header = '', fmt='%s')
 
     #out = np.concatenate((np.array(test_head).T, np.array(pred_prob)), axis=1)
