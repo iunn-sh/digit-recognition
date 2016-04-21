@@ -86,3 +86,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# feature file (.csv too big to upload)
+feature/*.csv
