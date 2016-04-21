@@ -22,6 +22,7 @@
 * `optimizer.py`    : calculate then plot out-of-bag accuracy for the range of trees (n_estimators)
 * `plotter.py`      : plot history accuracy to plotly, run at CircleCI
 * `displayer.py`    : display train/test file
+* `finalizer.py`    : transform probability to 0 or 1 if certain enough
 
 ## Feature Extraction
 * color difference / slope
