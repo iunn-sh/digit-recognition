@@ -24,6 +24,34 @@ def get_raw(fn):
 
     return line
 
+def gen_bounding_box(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
+    bounding_box = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img = img.astype(np.uint8)
+
+        B = np.argwhere(img)
+        (ystart, xstart), (ystop, xstop) = B.min(0), B.max(0) + 1
+        width = xstop - xstart
+        height = ystop - ystart
+        center_x = (xstop + xstart) / 2
+        center_y = (ystop + ystart) / 2
+        ratio = float(width) / float(height)
+
+        flatten = [center_x, center_y, width, height, ratio]
+        # print flatten
+        linked = [name] + ['{}'.format(x) for x in flatten]
+        # print linked
+        bounding_box.append(linked)
+
+    with open(output_fn, 'wb') as f:
+        for l in bounding_box:
+            f.write(','.join(l)+'\n')
+
 def gen_contour(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
     contour = []
@@ -36,18 +64,11 @@ def gen_contour(fn, output_fn):
         # print img
 
         ret, thresh = cv2.threshold(img, 127, 255, 0)
-        cnts, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        print str(len(cnts)),"contours"
+        cnts, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
+        # print str(len(cnts)),"contours"
         for c in cnts:
-            print str(len(c)), "points"
-            # print c
+            # print str(len(c)), "points"
             cv2.drawContours(img, c, -1, (0,255,0), 3)
-            # print img
-            # f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
-            # ax1.imshow(img, cmap=plt.cm.gray)
-            # ax2.imshow(img, cmap=plt.cm.gray)
-            # plt.suptitle('%s' %name)
-            # plt.show()
 
         flatten = [val for lists in cnts for sublists in lists for sublist in sublists for val in sublist]
         # print flatten
@@ -121,7 +142,6 @@ def gen_xy_sum(fn, output_fn):
             for j in range(LENGTH):
                 y_list.append(img[j, i])
             y_sum.append(str(sum(1 if y>0 else 0 for y in y_list)))
-        # print "xy_sum length:", len(x_sum), len(y_sum)
 
         linked = [name] + x_sum + y_sum
         # print linked
@@ -137,9 +157,6 @@ def get_csv(fn, output_fn, folder):
         # for each file in sample file
         for l in csv.reader(f):
             fea=get_raw(folder+l[0])
-            # for training data, with label
-            # feas.append([l[0], l[1]]+map(str, fea))
-            # for testing data, without label
             feas.append([l[0]]+map(str, fea))
 
     with open(output_fn, 'wb') as f:
@@ -157,7 +174,9 @@ if __name__ == '__main__':
 
     output_fn_xy_sum = 'feature/xy_sum_'+output_fn.replace("/","_")
     gen_xy_sum(output_fn_deskew, output_fn_xy_sum)
-    # gen_hog(sys.argv[2])
 
     output_fn_contour = 'feature/contour_'+output_fn.replace("/","_")
     gen_contour(output_fn_deskew, output_fn_contour)
+
+    output_fn_bbox = 'feature/bbox_'+output_fn.replace("/","_")
+    gen_bounding_box(output_fn_deskew, output_fn_bbox)
