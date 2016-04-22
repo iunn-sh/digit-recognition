@@ -17,6 +17,7 @@ test:
     - cd feature && unzip deskew_data.zip
     - cd feature && unzip xy_sum_data.zip
     - cd feature && unzip contour_data.zip
+    - cd feature && unzip bbox_data.zip
     - python random_forest.py
 
 deployment:
