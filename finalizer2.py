@@ -9,7 +9,8 @@ def finalizer(inputFile,outputFile):
 	data = pd.read_csv(path.join(".", inputFile),header=None)
 	header = data.iloc[:,0:1].values
 	data = data.iloc[:,1:].values
-	data = np.where(data > 0.99, 1 , data)
+	data = np.where(data > 0.90, 1 , data)
+	data = np.where(data < 0.1, 0 , data)
 	data = np.hstack((header, data))
 	np.savetxt(outputFile, data, delimiter=',', header = '', fmt='%s')
 

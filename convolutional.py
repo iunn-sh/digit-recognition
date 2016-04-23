@@ -125,42 +125,32 @@ def error_rate(predictions, labels):
 
 
 def main(argv=None):  # pylint: disable=unused-argument
-  if FLAGS.self_test:
-    print('Running self-test.')
-    train_data, train_labels = fake_data(256)
-    validation_data, validation_labels = fake_data(EVAL_BATCH_SIZE)
-    test_data, test_labels = fake_data(EVAL_BATCH_SIZE)
-    num_epochs = 1
-  else:
+   
     # Get the data.
-    #train_data_filename = maybe_download('train-images-idx3-ubyte.gz')
-    #train_labels_filename = maybe_download('train-labels-idx1-ubyte.gz')
-    #test_data_filename = maybe_download('t10k-images-idx3-ubyte.gz')
-    #test_labels_filename = maybe_download('t10k-labels-idx1-ubyte.gz')
-
     # Extract it into numpy arrays.
-    #train_data = extract_data(train_data_filename, 60000)
-    #train_labels = extract_labels(train_labels_filename, 60000)
-
-    train_data = get_date('feature/deskew_data_train.csv',10000)
-    train_header ,train_labels = get_labels('data/label.csv',10000)
+ 
+#    train_data = get_date('feature/deskew_data_train.csv',10000)
+  train_data = get_date('data/train.csv',10000)
+  train_header ,train_labels = get_labels('data/label.csv',10000)
     #print(train_data)
     #print(train_labels)
     
-    #test_data = extract_data(test_data_filename, 10000)
-    #test_labels = extract_labels(test_labels_filename, 10000)
-    test_data = get_date('feature/deskew_data_test.csv',50000)
-    test_header ,test_labels = get_labels('feature/deskew_data_test.csv',50000)
+ 
+#    test_data = get_date('feature/deskew_data_test.csv',50000)
+  test_data = get_date('data/test.csv',50000)
+  test_header ,test_labels = get_labels('feature/deskew_data_test.csv',50000)
+
 
     # Generate a validation set.
-    validation_data = train_data[:VALIDATION_SIZE, ...]
-    validation_labels = train_labels[:VALIDATION_SIZE]
+  validation_data = train_data[:VALIDATION_SIZE, ...]
+  validation_labels = train_labels[:VALIDATION_SIZE]
     #train_data = train_data[VALIDATION_SIZE:, ...]
     #train_labels = train_labels[VALIDATION_SIZE:]
-    print('train_data({0[0]},{0[1]})'.format(train_data.shape))
-    print('train_labels({0[0]})'.format(train_labels.shape))
+  print('train_data({0[0]},{0[1]})'.format(train_data.shape))
+  print('train_labels({0[0]})'.format(train_labels.shape))
 
-    num_epochs = NUM_EPOCHS
+  num_epochs = NUM_EPOCHS
+
   train_size = train_labels.shape[0]
 
   # This is where training samples and labels are fed to the graph.
@@ -349,7 +339,7 @@ def main(argv=None):  # pylint: disable=unused-argument
 
     out = numpy.hstack((test_header, pred_prob))
     print(out[0])
-    numpy.savetxt('data/submit-convolutional.csv', out, delimiter=',', header = '', fmt='%s')
+    numpy.savetxt('data/submit-convolutional-raw.csv', out, delimiter=',', header = '', fmt='%s')
     #pred_prob = y_conv.eval(feed_dict={x: test_images, keep_prob: 1.0}, session=sess)
 
 if __name__ == '__main__':

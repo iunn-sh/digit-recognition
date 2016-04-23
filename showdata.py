@@ -2,13 +2,13 @@ import sys
 import math
 import csv
 
-# python showdata.py filename data/train/
+# python showdata.py data/train/ filename 
 
 
 PIXEL_COUNT = 28
 
 
-def show(fn, folder):
+def show(folder,fn ):
     
     with open(folder+fn, 'rb') as f:
         px=f.read(PIXEL_COUNT)
