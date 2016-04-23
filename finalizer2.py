@@ -39,8 +39,8 @@ def findNotSureData(inputFile,outputFile):
 	data = pd.read_csv(path.join(".", inputFile),header=None)
 	data = data.values
 	 
-	data = data[getCond(data,"<",0.99)]
-	data = data[getCond(data,">",0.90)]
+	data = data[getCond(data,"<",0.6)]
+	#data = data[getCond(data,">",0.90)]
 	np.savetxt(outputFile, data, delimiter=',', header = '', fmt='%s')       
 
 if __name__ == '__main__':
