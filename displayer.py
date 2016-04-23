@@ -73,8 +73,8 @@ def show_pixel(folder, name):
     img_deskew.shape = (LENGTH, LENGTH)
     point_contour = np.array(contour[1:], dtype=np.int)
     point_contour.shape = (-1, 2)
-    atr_bbox = np.array(bbox[1:], dtype=np.int)
-    atr_bbox.shape = (-1, 4)
+    #atr_bbox = np.array(bbox[1:], dtype=np.int)
+    #atr_bbox.shape = (-1, 4)
 
     f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
     ax1.imshow(img_raw, cmap=plt.cm.gray)
@@ -82,7 +82,7 @@ def show_pixel(folder, name):
 
     ax2.scatter(x=[coord[0] for coord in point_contour], y=[coord[1] for coord in point_contour], c='r')
 
-    ax2.scatter(x=[coord[0] for coord in atr_bbox], y=[coord[1] for coord in atr_bbox], c='g')
+    #ax2.scatter(x=[coord[0] for coord in atr_bbox], y=[coord[1] for coord in atr_bbox], c='g')
     # ax2.scatter(x=atr_bbox[0], y=atr_bbox[1], c='g')
 
     # # print atr_bbox
