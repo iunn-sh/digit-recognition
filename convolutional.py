@@ -129,11 +129,16 @@ def main(argv=None):  # pylint: disable=unused-argument
     # Get the data.
     # Extract it into numpy arrays.
  
-#    train_data = get_date('feature/deskew_data_train.csv',10000)
+  train_deskew_data = get_date('feature/deskew_data_train.csv',10000)
   train_data = get_date('data/train.csv',10000)
+  train_data = numpy.append(train_data,train_deskew_data,axis=0)
+
   train_header ,train_labels = get_labels('data/label.csv',10000)
-    #print(train_data)
-    #print(train_labels)
+  deskew_train_labels = train_labels
+  train_labels = numpy.append(train_labels,deskew_train_labels,axis=0)
+    
+  print(train_data.shape)
+  print(train_labels.shape)
     
  
 #    test_data = get_date('feature/deskew_data_test.csv',50000)
