@@ -5,7 +5,6 @@ import numpy as np
 import cv2
 import random_forest
 
-import matplotlib.pyplot as plt
 from skimage.feature import hog
 from skimage import data, color, exposure
 
@@ -15,17 +14,97 @@ from skimage import data, color, exposure
 LENGTH = 28
 PIXEL_COUNT = LENGTH * LENGTH
 
+
 def get_raw(fn):
     with open(fn, 'rb') as f:
-        px=f.read(PIXEL_COUNT)
+        px = f.read(PIXEL_COUNT)
         line = []
         for i in range(PIXEL_COUNT):
             line.append(ord(px[i]))
 
     return line
 
+def gen_skeleton(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
+    skeleton = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img = img.astype(np.uint8)
+
+        size = np.size(img)
+        img_skeleton = np.zeros(img.shape,np.uint8)
+        element = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+        done = False
+
+        while(not done):
+            eroded = cv2.erode(img,element)
+            temp = cv2.dilate(eroded,element)
+            temp = cv2.subtract(img,temp)
+            img_skeleton = cv2.bitwise_or(img_skeleton,temp)
+            img = eroded.copy()
+
+            zeros = size - cv2.countNonZero(img)
+            if zeros==size:
+                done = True
+
+        linked = [name] + ['{}'.format(x) for x in img_skeleton.flatten()]
+        # print linked
+        skeleton.append(linked)
+
+    with open(output_fn, 'wb') as f:
+        for l in skeleton:
+            f.write(','.join(l) + '\n')
+
+
+def gen_binary(fn, output_fn):
+    pixel = random_forest.read_csv_to_list(fn)
+    binary = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img = img.astype(np.uint8)
+#
+        # ret,img_binary = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
+        img_binary = cv2.adaptiveThreshold(
+            img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 0)
+
+        linked = [name] + ['{}'.format(x) for x in img_binary.flatten()]
+        binary.append(linked)
+
+    with open(output_fn, 'wb') as f:
+        for l in binary:
+            f.write(','.join(l) + '\n')
+
+
 def gen_erosion(fn, output_fn):
-    
+    pixel = random_forest.read_csv_to_list(fn)
+    erosion = []
+
+    for row in pixel:
+        name = row[0]
+        img = np.array(row[1:], dtype=np.float)
+        img.shape = (LENGTH, LENGTH)
+        img = img.astype(np.uint8)
+        # img_erosion = []
+
+        kernel = np.ones((3, 3), np.uint8)
+        # img_open = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+        # img_gradient = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+        # img_erosion = cv2.getStructuringElement(cv2.MORPH_CROSS,(3,3))
+        img_erosion = cv2.erode(img, kernel, iterations=1)
+
+        linked = [name] + ['{}'.format(x) for x in img_erosion.flatten()]
+        erosion.append(linked)
+
+    with open(output_fn, 'wb') as f:
+        for l in erosion:
+            f.write(','.join(l) + '\n')
+
 
 def gen_bounding_box(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
@@ -46,14 +125,13 @@ def gen_bounding_box(fn, output_fn):
         ratio = float(width) / float(height)
 
         flatten = [center_x, center_y, width, height, ratio]
-        # print flatten
         linked = [name] + ['{}'.format(x) for x in flatten]
-        # print linked
         bounding_box.append(linked)
 
     with open(output_fn, 'wb') as f:
         for l in bounding_box:
-            f.write(','.join(l)+'\n')
+            f.write(','.join(l) + '\n')
+
 
 def gen_contour(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
@@ -67,13 +145,15 @@ def gen_contour(fn, output_fn):
         # print img
 
         ret, thresh = cv2.threshold(img, 127, 255, 0)
-        cnts, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
+        cnts, hierarchy = cv2.findContours(
+            thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_TC89_L1)
         # print str(len(cnts)),"contours"
         for c in cnts:
             # print str(len(c)), "points"
-            cv2.drawContours(img, c, -1, (0,255,0), 3)
+            cv2.drawContours(img, c, -1, (0, 255, 0), 3)
 
-        flatten = [val for lists in cnts for sublists in lists for sublist in sublists for val in sublist]
+        flatten = [
+            val for lists in cnts for sublists in lists for sublist in sublists for val in sublist]
         # print flatten
         linked = [name] + ['{}'.format(x) for x in flatten]
         # print linked
@@ -81,7 +161,7 @@ def gen_contour(fn, output_fn):
 
     with open(output_fn, 'wb') as f:
         for l in contour:
-            f.write(','.join(l)+'\n')
+            f.write(','.join(l) + '\n')
 
 # def gen_hog(output_fn):
 #     pixel = random_forest.read_csv_to_list(output_fn)
@@ -102,10 +182,11 @@ def gen_contour(fn, output_fn):
 #         for l in hog_pixel:
 #             f.write(','.join(l)+'\n')
 
+
 def gen_deskew(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
     deskew = []
-    affine_flags = cv2.WARP_INVERSE_MAP|cv2.INTER_LINEAR
+    affine_flags = cv2.WARP_INVERSE_MAP | cv2.INTER_LINEAR
 
     for row in pixel:
         name = row[0]
@@ -116,16 +197,18 @@ def gen_deskew(fn, output_fn):
         m = cv2.moments(img)
         if abs(m['mu02']) < 1e-2:
             img_deskew = img.copy()
-        skew = m['mu11']/m['mu02']
-        M = np.float32([[1, skew, -0.5*LENGTH*skew], [0, 1, 0]])
-        img_deskew = cv2.warpAffine(img,M,(LENGTH, LENGTH),flags=affine_flags)
+        skew = m['mu11'] / m['mu02']
+        M = np.float32([[1, skew, -0.5 * LENGTH * skew], [0, 1, 0]])
+        img_deskew = cv2.warpAffine(
+            img, M, (LENGTH, LENGTH), flags=affine_flags)
 
         linked = [name] + ['{}'.format(x) for x in img_deskew.flatten()]
         deskew.append(linked)
 
     with open(output_fn, 'wb') as f:
         for l in deskew:
-            f.write(','.join(l)+'\n')
+            f.write(','.join(l) + '\n')
+
 
 def gen_xy_sum(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
@@ -140,11 +223,11 @@ def gen_xy_sum(fn, output_fn):
         y_sum = []
         for i in range(LENGTH):
             x_list = img[i]
-            x_sum.append(str(sum(1 if x>0 else 0 for x in x_list)))
+            x_sum.append(str(sum(1 if x > 0 else 0 for x in x_list)))
             y_list = []
             for j in range(LENGTH):
                 y_list.append(img[j, i])
-            y_sum.append(str(sum(1 if y>0 else 0 for y in y_list)))
+            y_sum.append(str(sum(1 if y > 0 else 0 for y in y_list)))
 
         linked = [name] + x_sum + y_sum
         # print linked
@@ -152,19 +235,21 @@ def gen_xy_sum(fn, output_fn):
 
     with open(output_fn, 'wb') as f:
         for l in xy_sum:
-            f.write(','.join(l)+'\n')
+            f.write(','.join(l) + '\n')
+
 
 def get_csv(fn, output_fn, folder):
-    feas=[]
+    feas = []
     with open(fn, 'rb') as f:
         # for each file in sample file
         for l in csv.reader(f):
-            fea=get_raw(folder+l[0])
-            feas.append([l[0]]+map(str, fea))
+            fea = get_raw(folder + l[0])
+            feas.append([l[0]] + map(str, fea))
 
     with open(output_fn, 'wb') as f:
         # write features of each file into csv
-        for l in feas: f.write(','.join(l)+'\n')
+        for l in feas:
+            f.write(','.join(l) + '\n')
 
 if __name__ == '__main__':
     fn = sys.argv[1]
@@ -172,14 +257,23 @@ if __name__ == '__main__':
     folder = sys.argv[3]
     get_csv(fn, output_fn, folder)
 
-    output_fn_deskew = 'feature/deskew_'+output_fn.replace("/","_")
+    output_fn_deskew = 'feature/deskew_' + output_fn.replace("/", "_")
     gen_deskew(output_fn, output_fn_deskew)
 
-    output_fn_xy_sum = 'feature/xy_sum_'+output_fn.replace("/","_")
+    output_fn_binary = 'feature/binary_' + output_fn.replace("/", "_")
+    gen_binary(output_fn_deskew, output_fn_binary)
+
+    output_fn_erosion = 'feature/erosion_' + output_fn.replace("/", "_")
+    gen_erosion(output_fn_binary, output_fn_erosion)
+
+    output_fn_skeleton = 'feature/skeleton_' + output_fn.replace("/", "_")
+    gen_skeleton(output_fn_binary, output_fn_skeleton)
+
+    output_fn_xy_sum = 'feature/xy_sum_' + output_fn.replace("/", "_")
     gen_xy_sum(output_fn_deskew, output_fn_xy_sum)
 
-    output_fn_contour = 'feature/contour_'+output_fn.replace("/","_")
+    output_fn_contour = 'feature/contour_' + output_fn.replace("/", "_")
     gen_contour(output_fn_deskew, output_fn_contour)
 
-    output_fn_bbox = 'feature/bbox_'+output_fn.replace("/","_")
+    output_fn_bbox = 'feature/bbox_' + output_fn.replace("/", "_")
     gen_bounding_box(output_fn_deskew, output_fn_bbox)
