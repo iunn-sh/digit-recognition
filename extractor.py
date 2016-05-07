@@ -24,6 +24,9 @@ def get_raw(fn):
 
     return line
 
+def gen_erosion(fn, output_fn):
+    
+
 def gen_bounding_box(fn, output_fn):
     pixel = random_forest.read_csv_to_list(fn)
     bounding_box = []

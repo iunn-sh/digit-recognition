@@ -25,9 +25,9 @@
 * `finalizer.py`    : transform probability to 0 or 1 if certain enough
 
 ## Feature Extraction
-* `deskew_` : remove skew from image (784)
-* `xy_sum_` : pixel color density in x & y direction (28+28)
-* `bbox_`   : bounding box of digit, including center coordinate, rectangle width, rectangle length, width/length ratio (2+2+1)
+* `deskew_` : remove skew from image (28*28=784)
+* `xy_sum_` : pixel color density in x & y direction (28+28=56)
+* `bbox_`   : bounding box of digit, including center coordinate, rectangle width, rectangle length, width/length ratio (2+2+1=5)
 * contour
 * color difference / slope
 * histogram of oriented gradients

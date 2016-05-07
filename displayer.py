@@ -11,6 +11,7 @@ from os import path
 
 LENGTH = 28
 
+
 def show_pixel(folder, name):
     script_dir = path.dirname(__file__)
 
@@ -73,32 +74,31 @@ def show_pixel(folder, name):
     img_deskew.shape = (LENGTH, LENGTH)
     point_contour = np.array(contour[1:], dtype=np.int)
     point_contour.shape = (-1, 2)
-    #atr_bbox = np.array(bbox[1:], dtype=np.int)
-    #atr_bbox.shape = (-1, 4)
+    atr_bbox = np.array(bbox[1:5], dtype=np.int)
 
     f, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
     ax1.imshow(img_raw, cmap=plt.cm.gray)
     ax2.imshow(img_deskew, cmap=plt.cm.gray)
 
-    ax2.scatter(x=[coord[0] for coord in point_contour], y=[coord[1] for coord in point_contour], c='r')
+    ax2.scatter(x=[coord[0] for coord in point_contour], y=[
+                coord[1] for coord in point_contour], c='r')
 
-    #ax2.scatter(x=[coord[0] for coord in atr_bbox], y=[coord[1] for coord in atr_bbox], c='g')
-    # ax2.scatter(x=atr_bbox[0], y=atr_bbox[1], c='g')
+    bbox_width = atr_bbox[2]
+    bbox_height = atr_bbox[3]
+    bbox_x = atr_bbox[0] - (0.5 * bbox_width)
+    bbox_y = atr_bbox[1] - (0.5 * bbox_height)
+    ax2.add_patch(
+        patches.Rectangle(
+            (bbox_x, bbox_y),
+            bbox_width,
+            bbox_height,
+            alpha=0.3,
+            facecolor="#00ffff"
+        )
+    )
 
-    # # print atr_bbox
-    # rect = patches.Rectangle((atr_bbox[0], atr_bbox[1]), atr_bbox[2], atr_bbox[3], color='green')
-    # transform = mpl.transforms.Affine2D().rotate_deg(int(atr_bbox[4]))
-    # rect.set_transform(transform)
-    # ax2.add_patch(rect)
-
-    plt.suptitle('%s' %label)
+    plt.suptitle('%s' % label)
     plt.show()
-
-    # img_raw = np.array(raw[1:], dtype=np.float)
-    # img_raw.shape = (28, 28)
-    # imgplot = plt.imshow(img_raw, cmap=plt.cm.gray)
-    # plt.title('%s' %label)
-    # plt.show()
 
 if __name__ == "__main__":
     show_pixel(sys.argv[1], sys.argv[2])
