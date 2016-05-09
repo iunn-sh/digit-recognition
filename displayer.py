@@ -25,14 +25,14 @@ def show_pixel(folder, name):
         contour_file = 'feature/contour_data_train.csv'
         bbox_file = 'feature/bbox_data_train.csv'
     elif folder == 'test':
-        pixel_file = 'data/test.csv'
+        pixel_file = 'data/test-new.csv'
         label_file = 'data/submit.csv'
-        deskew_pixel_file = 'feature/deskew_data_test.csv'
-        binary_pixel_file = 'feature/binary_data_test.csv'
-        skeleton_pixel_file = 'feature/skeleton_data_test.csv'
-        erosion_pixel_file = 'feature/erosion_data_test.csv'
-        contour_file = 'feature/contour_data_test.csv'
-        bbox_file = 'feature/bbox_data_test.csv'
+        deskew_pixel_file = 'feature/deskew_data_test-new.csv'
+        binary_pixel_file = 'feature/binary_data_test-new.csv'
+        skeleton_pixel_file = 'feature/skeleton_data_test-new.csv'
+        erosion_pixel_file = 'feature/erosion_data_test-new.csv'
+        contour_file = 'feature/contour_data_test-new.csv'
+        bbox_file = 'feature/bbox_data_test-new.csv'
     else:
         print "usage 1: python displayer.py train 001fdcb9"
         print "usage 1: python displayer.py test 00224a98"
@@ -120,7 +120,7 @@ def show_pixel(folder, name):
     ax4.imshow(img_binary, cmap=plt.cm.gray)
     ax4.set_title('deskew + binary')
     ax5.imshow(img_erosion, cmap=plt.cm.gray)
-    ax5.set_title('deskew + binary + erosion')
+    ax5.set_title('deskew + erosion')
     ax6.imshow(img_skeleton, cmap=plt.cm.gray)
     ax6.set_title('deskew + binary + skeleton')
 

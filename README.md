@@ -19,6 +19,7 @@
 * `extractor.py`    : pre-process, only run 1 time for reading raw data
 * `random_forest.py`: train, test, create .csv for submission (main function)
 * `mnist_softmax.py`: train, test, create .csv for submission (main function)
+* `convolutional.py`: train, test, create .csv for submission (main function)
 * `optimizer.py`    : calculate then plot out-of-bag accuracy for the range of trees (n_estimators)
 * `plotter.py`      : plot history accuracy to plotly, run at CircleCI
 * `displayer.py`    : display train/test file

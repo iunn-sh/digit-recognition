@@ -89,3 +89,6 @@ ENV/
 
 # feature file (.csv too big to upload)
 feature/*.csv
+data/train/
+data/test/
+data/*.csv

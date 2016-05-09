@@ -10,6 +10,7 @@ from skimage import data, color, exposure
 
 # python extractor.py data/label.csv data/train.csv data/train/
 # python extractor.py data/sample.csv data/test.csv data/test/
+# python extractor.py data/sample-new.csv data/test-new.csv data/test/
 
 LENGTH = 28
 PIXEL_COUNT = LENGTH * LENGTH
@@ -264,7 +265,7 @@ if __name__ == '__main__':
     gen_binary(output_fn_deskew, output_fn_binary)
 
     output_fn_erosion = 'feature/erosion_' + output_fn.replace("/", "_")
-    gen_erosion(output_fn_binary, output_fn_erosion)
+    gen_erosion(output_fn_deskew, output_fn_erosion)
 
     output_fn_skeleton = 'feature/skeleton_' + output_fn.replace("/", "_")
     gen_skeleton(output_fn_binary, output_fn_skeleton)
