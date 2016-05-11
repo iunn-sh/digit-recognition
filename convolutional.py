@@ -48,6 +48,12 @@ NUM_EPOCHS = 40
 EVAL_BATCH_SIZE = 64
 EVAL_FREQUENCY = 100  # Number of steps between evaluations.
 
+TRAIN_DATA = 'feature/skeleton_data_train.csv'
+TRAIN_LABEL = 'data/label.csv'
+TRAIN_SIZE = 10000
+
+TEST_DATA = 'feature/skeleton_data_test-new.csv'
+TEST_SIZE = 100000
 
 tf.app.flags.DEFINE_boolean("self_test", False, "True if running a self test.")
 FLAGS = tf.app.flags.FLAGS
@@ -129,21 +135,21 @@ def main(argv=None):  # pylint: disable=unused-argument
     # Get the data.
     # Extract it into numpy arrays.
  
-  train_deskew_data = get_date('feature/deskew_data_train.csv',10000)
-  train_data = get_date('data/train.csv',10000)
-  train_data = numpy.append(train_data,train_deskew_data,axis=0)
+  #train_deskew_data = get_date(TRAIN_DATA,10000)
+  train_data = get_date(TRAIN_LABEL,TRAIN_SIZE)
+  #train_data = numpy.append(train_data,train_deskew_data,axis=0)
 
-  train_header ,train_labels = get_labels('data/label.csv',10000)
-  deskew_train_labels = train_labels
-  train_labels = numpy.append(train_labels,deskew_train_labels,axis=0)
+  train_header ,train_labels = get_labels(TRAIN_LABEL,TRAIN_SIZE)
+  #deskew_train_labels = train_labels
+  #train_labels = numpy.append(train_labels,deskew_train_labels,axis=0)
     
   print(train_data.shape)
   print(train_labels.shape)
     
  
 #    test_data = get_date('feature/deskew_data_test.csv',50000)
-  test_data = get_date('data/test.csv',50000)
-  test_header ,test_labels = get_labels('feature/deskew_data_test.csv',50000)
+  test_data = get_date(TEST_DATA,TEST_SIZE)
+  test_header ,test_labels = get_labels(TEST_DATA,TEST_SIZE)
 
 
     # Generate a validation set.
@@ -334,7 +340,7 @@ def main(argv=None):  # pylint: disable=unused-argument
     #      test_error,)
     x = tf.placeholder(
       tf.float32,
-      [50000, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS])
+      [TEST_SIZE, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS])
     test_prediction = tf.nn.softmax(model(x))
     pred_prob = sess.run( test_prediction,
             feed_dict={x: test_data })
