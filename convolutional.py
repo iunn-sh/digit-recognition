@@ -136,7 +136,7 @@ def main(argv=None):  # pylint: disable=unused-argument
     # Extract it into numpy arrays.
  
   #train_deskew_data = get_date(TRAIN_DATA,10000)
-  train_data = get_date(TRAIN_LABEL,TRAIN_SIZE)
+  train_data = get_date(TRAIN_DATA,TRAIN_SIZE)
   #train_data = numpy.append(train_data,train_deskew_data,axis=0)
 
   train_header ,train_labels = get_labels(TRAIN_LABEL,TRAIN_SIZE)
