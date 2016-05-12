@@ -340,17 +340,22 @@ def main(argv=None):  # pylint: disable=unused-argument
     #      test_error,)
     x = tf.placeholder(
       tf.float32,
-      [TEST_SIZE, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS])
+      [50000, IMAGE_SIZE, IMAGE_SIZE, NUM_CHANNELS])
     test_prediction = tf.nn.softmax(model(x))
     pred_prob = sess.run( test_prediction,
-            feed_dict={x: test_data })
+            feed_dict={x: test_data[:50000] })
 
     print('pred_prob({0[0]},{0[1]})'.format(pred_prob.shape))
     
 
-    out = numpy.hstack((test_header, pred_prob))
+    out = numpy.hstack((test_header[:50000], pred_prob))
     print(out[0])
     numpy.savetxt('data/submit-convolutional-raw.csv', out, delimiter=',', header = '', fmt='%s')
+
+    pred_prob = sess.run( test_prediction,
+            feed_dict={x: test_data[50000:] })
+    out = numpy.hstack((test_header[50000:], pred_prob))
+    numpy.savetxt('data/submit-convolutional-raw2.csv', out, delimiter=',', header = '', fmt='%s')
     #pred_prob = y_conv.eval(feed_dict={x: test_images, keep_prob: 1.0}, session=sess)
 
 if __name__ == '__main__':
