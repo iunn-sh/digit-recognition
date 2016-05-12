@@ -8,6 +8,7 @@ from os import path
 
 # python displayer.py train 04cbb3ce
 # python displayer.py test 5926da93
+# python displayer.py test 0a0eb4561
 
 LENGTH = 28
 
@@ -122,7 +123,7 @@ def show_pixel(folder, name):
     ax5.imshow(img_erosion, cmap=plt.cm.gray)
     ax5.set_title('deskew + erosion')
     ax6.imshow(img_skeleton, cmap=plt.cm.gray)
-    ax6.set_title('deskew + binary + skeleton')
+    ax6.set_title('deskew + skeleton')
 
     ax3.scatter(x=[coord[0] for coord in point_contour], y=[
                 coord[1] for coord in point_contour], c='r')
@@ -141,7 +142,7 @@ def show_pixel(folder, name):
         )
     )
 
-    plt.suptitle('%s : %s' % (folder, label))
+    plt.suptitle('%s/%s : %s' % (folder, name, label))
     plt.show()
 
 if __name__ == "__main__":

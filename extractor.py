@@ -69,7 +69,7 @@ def gen_binary(fn, output_fn):
         img = np.array(row[1:], dtype=np.float)
         img.shape = (LENGTH, LENGTH)
         img = img.astype(np.uint8)
-#
+
         # ret,img_binary = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
         img_binary = cv2.adaptiveThreshold(
             img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 0)
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     gen_erosion(output_fn_deskew, output_fn_erosion)
 
     output_fn_skeleton = 'feature/skeleton_' + output_fn.replace("/", "_")
-    gen_skeleton(output_fn_binary, output_fn_skeleton)
+    gen_skeleton(output_fn_deskew, output_fn_skeleton)
 
     output_fn_xy_sum = 'feature/xy_sum_' + output_fn.replace("/", "_")
     gen_xy_sum(output_fn_deskew, output_fn_xy_sum)
