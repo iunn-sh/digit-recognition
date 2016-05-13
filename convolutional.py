@@ -48,11 +48,11 @@ NUM_EPOCHS = 40
 EVAL_BATCH_SIZE = 64
 EVAL_FREQUENCY = 100  # Number of steps between evaluations.
 
-TRAIN_DATA = 'feature/deskew_data_train.csv'
+TRAIN_DATA = 'feature/skeleton_data_train.csv'
 TRAIN_LABEL = 'data/label.csv'
 TRAIN_SIZE = 10000
 
-TEST_DATA = 'feature/deskew_data_test-new.csv'
+TEST_DATA = 'feature/skeleton_data_test-new.csv'
 TEST_SIZE = 100000
 
 tf.app.flags.DEFINE_boolean("self_test", False, "True if running a self test.")
