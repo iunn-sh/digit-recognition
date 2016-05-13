@@ -14,6 +14,7 @@ dependencies:
 
 test:
   override:
+    - cd data && unzip csv.zip
     - cd feature && unzip deskew_data.zip
     - cd feature && unzip xy_sum_data.zip
     - cd feature && unzip contour_data.zip
