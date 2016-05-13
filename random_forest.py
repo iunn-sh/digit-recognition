@@ -12,19 +12,19 @@ def create_forest():
 
     label = read_csv_to_list(path.join(script_dir, 'data/label.csv'))
     train = read_csv_to_list(path.join(script_dir, 'feature/deskew_data_train.csv'))
-    test = read_csv_to_list(path.join(script_dir, 'feature/deskew_data_test.csv'))
+    test = read_csv_to_list(path.join(script_dir, 'feature/deskew_data_test-new.csv'))
     label_train = link_by_key(label, train)
 
     # include xy_sum in feature set
     train_xy = read_csv_to_list(path.join(script_dir, 'feature/xy_sum_data_train.csv'))
     label_train = link_by_key(label_train, train_xy)
-    test_xy = read_csv_to_list(path.join(script_dir, 'feature/xy_sum_data_test.csv'))
+    test_xy = read_csv_to_list(path.join(script_dir, 'feature/xy_sum_data_test-new.csv'))
     test = link_by_key(test, test_xy)
 
     # include bbox in feature set
     train_bbox = read_csv_to_list(path.join(script_dir, 'feature/bbox_data_train.csv'))
     label_train = link_by_key(label_train, train_bbox)
-    test_bbox = read_csv_to_list(path.join(script_dir, 'feature/bbox_data_test.csv'))
+    test_bbox = read_csv_to_list(path.join(script_dir, 'feature/bbox_data_test-new.csv'))
     test = link_by_key(test, test_bbox)
 
     print "training set count =", len(label_train)
