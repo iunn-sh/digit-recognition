@@ -13,10 +13,10 @@
 # limitations under the License.
 # ==============================================================================
 
-"""A very simple MNIST classifier.
+"""
+Build a Multilayer Convolutional Network
+https://www.tensorflow.org/versions/r0.8/tutorials/mnist/pros/index.html
 
-See extensive documentation at
-http://tensorflow.org/tutorials/mnist/beginners/index.md
 """
 from __future__ import absolute_import
 from __future__ import division
