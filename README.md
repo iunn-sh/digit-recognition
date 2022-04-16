@@ -1,5 +1,5 @@
 # digit-recognition
-[![Circle CI](https://circleci.com/gh/jbytw/digit-recognition.svg?style=shield)](https://circleci.com/gh/jbytw/digit-recognition)
+[![Circle CI](https://img.shields.io/circleci/build/github/iunn-sh/digit-recognition/master?style=flat-square)](https://circleci.com/gh/iunn-sh/digit-recognition)
 
 ## Commit History
 [![out-of-bag accuracy](https://plot.ly/~jbytw/16/random-forest.png)](https://plot.ly/~jbytw/16/random-forest)
